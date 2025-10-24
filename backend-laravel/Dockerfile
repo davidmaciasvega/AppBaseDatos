@@ -15,22 +15,22 @@ RUN a2enmod rewrite
 # Copiar archivos del proyecto
 COPY . /var/www/html
 
-# Establecer el directorio de trabajo
+# Establecer directorio de trabajo
 WORKDIR /var/www/html
 
 # Instalar dependencias de Laravel
 RUN composer install --no-dev --optimize-autoloader
 
-# Cambiar el DocumentRoot a la carpeta public
+# Cambiar DocumentRoot a la carpeta public
 RUN sed -i 's|/var/www/html|/var/www/html/public|g' /etc/apache2/sites-available/000-default.conf
 
 # Configurar permisos
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Exponer el puerto
+# Exponer puerto 80
 EXPOSE 80
 
-# Comando por defecto al arrancar el contenedor
-# ✅ Ejecuta migraciones y luego arranca Apache
-CMD php artisan migrate --force && php artisan config:clear && php artisan route:clear && apache2-foreground
+# ✅ Comando por defecto al arrancar el contenedor
+# Ejecuta migraciones, limpia caché y luego arranca Apache
+CMD ["sh", "-c", "php artisan migrate --force && php artisan config:clear && php artisan route:clear && php artisan cache:clear && apache2-foreground"]
