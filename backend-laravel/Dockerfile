@@ -21,10 +21,7 @@ RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cac
 # Instalar Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-# Establecer directorio de trabajo
-WORKDIR /var/www/html
-
-# Instalar dependencias del proyecto
+# Instalar dependencias del proyecto UNA SOLA VEZ
 RUN composer install --no-dev --optimize-autoloader
 
 # Generar clave de aplicación (si no existe)
@@ -33,13 +30,20 @@ RUN php artisan key:generate --force || true
 # Configuración de Apache (para que Render use la raíz pública)
 RUN sed -i 's!/var/www/html!/var/www/html/public!g' /etc/apache2/sites-available/000-default.conf
 
-# Limpiar caches de Laravel
-RUN php artisan config:cache
-RUN php artisan route:cache
-RUN php artisan view:cache
+# Cache de Laravel UNA SOLA VEZ
+RUN php artisan config:cache && \
+    php artisan route:cache && \
+    php artisan view:cache
 
 # Exponer el puerto usado por Render
 EXPOSE 10000
+
+# Establecer directorio de trabajo
+WORKDIR /var/www/html
+RUN composer install --no-dev --optimize-autoloader
+RUN php artisan key:generate --force || true
+RUN php artisan config:cache && php artisan route:cache && php artisan view:cache
+
 
 # Iniciar Apache
 CMD ["apache2-foreground"]
