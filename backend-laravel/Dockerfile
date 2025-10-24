@@ -33,6 +33,11 @@ RUN php artisan key:generate --force || true
 # Configuración de Apache (para que Render use la raíz pública)
 RUN sed -i 's!/var/www/html!/var/www/html/public!g' /etc/apache2/sites-available/000-default.conf
 
+# Limpiar caches de Laravel
+RUN php artisan config:cache
+RUN php artisan route:cache
+RUN php artisan view:cache
+
 # Exponer el puerto usado por Render
 EXPOSE 10000
 
