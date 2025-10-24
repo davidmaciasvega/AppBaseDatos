@@ -31,5 +31,6 @@ RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 # Exponer el puerto
 EXPOSE 80
 
-# 🟢 Limpiar cachés al arrancar (cuando ya existen las variables de entorno de Render)
-CMD php artisan config:clear && php artisan cache:clear && php artisan route:clear && apache2-foreground
+# Comando por defecto al arrancar el contenedor
+# ✅ Ejecuta migraciones y luego arranca Apache
+CMD php artisan migrate --force && php artisan config:clear && php artisan route:clear && apache2-foreground
