@@ -24,17 +24,11 @@ RUN chown -R www-data:www-data storage bootstrap/cache
 # Instalar Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-# Instalar dependencias del proyecto (si no se copió vendor)
-RUN composer install --no-dev --optimize-autoloader
+# Instalar dependencias del proyecto si no existe vendor
+RUN [ -d vendor ] || composer install --no-dev --optimize-autoloader
 
-# Generar clave de aplicación solo si no existe
+# Generar clave de aplicación solo si no existe APP_KEY
 RUN php artisan key:generate --force || true
-
-# Cache de Laravel
-RUN php artisan config:clear && \
-    php artisan config:cache && \
-    php artisan route:cache && \
-    php artisan view:cache
 
 # Configuración de Apache para usar la carpeta public
 RUN sed -i 's!/var/www/html!/var/www/html/public!g' /etc/apache2/sites-available/000-default.conf
@@ -42,5 +36,10 @@ RUN sed -i 's!/var/www/html!/var/www/html/public!g' /etc/apache2/sites-available
 # Exponer el puerto usado por Render
 EXPOSE 10000
 
-# Iniciar Apache
-CMD ["apache2-foreground"]
+# Entry point: limpiar caches y generar caches en runtime
+# Esto asegura que Laravel vea las Environment Variables de Render
+CMD php artisan config:clear && \
+    php artisan config:cache && \
+    php artisan route:cache && \
+    php artisan view:cache && \
+    apache2-foreground
