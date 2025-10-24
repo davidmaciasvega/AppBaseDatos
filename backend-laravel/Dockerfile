@@ -4,7 +4,7 @@ FROM php:8.2-apache
 # Instalar dependencias necesarias
 RUN apt-get update && apt-get install -y \
     zip unzip git curl libpq-dev libonig-dev libzip-dev libpng-dev && \
-    docker-php-ext-install pdo pdo_mysql mbstring zip exif pcntl bcmath gd
+    docker-php-ext-install pdo pdo_mysql pdo_pgsql mbstring zip exif pcntl bcmath gd
 
 # Instalar Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
@@ -15,7 +15,7 @@ RUN a2enmod rewrite
 # Copiar archivos del proyecto
 COPY . /var/www/html
 
-# Establecer directorio de trabajo
+# Establecer el directorio de trabajo
 WORKDIR /var/www/html
 
 # Instalar dependencias de Laravel
@@ -28,10 +28,8 @@ RUN sed -i 's|/var/www/html|/var/www/html/public|g' /etc/apache2/sites-available
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Exponer puerto
+# Exponer el puerto
 EXPOSE 80
 
-RUN php artisan route:clear && php artisan config:clear && php artisan cache:clear
-
-# Comando por defecto
-CMD ["apache2-foreground"]
+# 🟢 Limpiar cachés al arrancar (cuando ya existen las variables de entorno de Render)
+CMD php artisan config:clear && php artisan cache:clear && php artisan route:clear && apache2-foreground
