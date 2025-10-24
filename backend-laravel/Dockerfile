@@ -31,5 +31,7 @@ RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 # Exponer puerto
 EXPOSE 80
 
+RUN php artisan route:clear && php artisan config:clear && php artisan cache:clear
+
 # Comando por defecto
 CMD ["apache2-foreground"]
