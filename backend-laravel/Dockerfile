@@ -12,6 +12,9 @@ RUN a2enmod rewrite
 # Copiar archivos del proyecto
 COPY . /var/www/html
 
+# Crear carpetas necesarias si no existen
+RUN mkdir -p /var/www/html/storage /var/www/html/bootstrap/cache
+
 # Establecer permisos correctos
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
