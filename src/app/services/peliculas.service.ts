@@ -2,12 +2,15 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Pelicula } from '../models/pelicula';
+import { environment } from '../../environments/environment';
+
 
 @Injectable({
   providedIn: 'root'
 })
 export class PeliculasService {
-  private apiUrl = 'http://127.0.0.1:8000/api/peliculas'; // URL base Laravel
+  private apiUrl = `${environment.apiUrl}/peliculas`;
+
 
   constructor(private http: HttpClient) {}
 
