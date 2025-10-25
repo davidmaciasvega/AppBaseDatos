@@ -1,23 +1,37 @@
 # Etapa 1: Build Angular
 FROM node:20 AS build
 
+# Directorio de trabajo
 WORKDIR /app
 
+# Copiar package.json y package-lock.json
 COPY package*.json ./
+
+# Instalar dependencias
 RUN npm install
 
+# Copiar todo el proyecto
 COPY . .
-RUN npx ng build --configuration production
 
-# Etapa 2: Servir con Node
+# Construir Angular en modo producción
+RUN npm run build -- --configuration production
+
+# Etapa 2: Servir con Express
 FROM node:20
 
 WORKDIR /app
-COPY --from=build /app/dist ./dist
-COPY server.js ./
-COPY package*.json ./
 
+# Copiar los archivos de producción de Angular desde la etapa de build
+COPY --from=build /app/dist/catalogo-frontend/browser ./browser
+
+# Copiar server.js
+COPY server.js .
+
+# Instalar express
 RUN npm install express
 
-EXPOSE 8080
+# Exponer puerto que usará Render
+EXPOSE 10000
+
+# Comando para iniciar el server
 CMD ["node", "server.js"]
