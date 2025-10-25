@@ -1,7 +1,7 @@
 # Etapa 1: Build de Angular
 FROM node:20 AS build
 
-# Crear directorio de trabajo
+# Directorio de trabajo
 WORKDIR /app
 
 # Copiar package.json y package-lock.json
@@ -26,7 +26,7 @@ COPY --from=build /app/dist/catalogo-frontend /usr/share/nginx/html
 RUN rm /etc/nginx/conf.d/default.conf
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-# Exponer puerto
+# Exponer puerto 80
 EXPOSE 80
 
 # Comando por defecto
