@@ -1,7 +1,7 @@
 # Etapa 1: Build de Angular
 FROM node:20 AS build
 
-# Directorio de trabajo
+# Crear directorio de trabajo
 WORKDIR /app
 
 # Copiar package.json y package-lock.json
@@ -10,7 +10,7 @@ COPY package*.json ./
 # Instalar dependencias
 RUN npm install
 
-# Copiar el resto del proyecto
+# Copiar todo el proyecto
 COPY . .
 
 # Construir Angular en modo producción
@@ -22,11 +22,10 @@ FROM nginx:alpine
 # Copiar build de Angular al directorio de Nginx
 COPY --from=build /app/dist/catalogo-frontend /usr/share/nginx/html
 
-# Configuración Nginx para rutas HTML5 de Angular
-RUN rm /etc/nginx/conf.d/default.conf
+# Copiar configuración de Nginx
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-# Exponer puerto 80
+# Exponer puerto
 EXPOSE 80
 
 # Comando por defecto
