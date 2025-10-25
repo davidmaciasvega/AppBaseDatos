@@ -1,0 +1,20 @@
+<div class="container mt-4 text-white">
+  <a routerLink="/" class="btn btn-outline-light mb-3">← Volver al catálogo</a>
+
+  <div *ngIf="cargando" class="alert alert-info">Cargando película...</div>
+  <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+
+  <div *ngIf="pelicula" class="card bg-dark bg-opacity-75 text-white p-4 shadow">
+    <div class="row">
+      <div class="col-md-4 text-center">
+        <img [src]="pelicula.portada" alt="{{ pelicula.titulo }}" class="img-fluid rounded">
+
+      </div>
+      <div class="col-md-8">
+        <h2>{{ pelicula.titulo }}</h2>
+        <p><strong>Año:</strong> {{ pelicula.anio }}</p>
+        <p><strong>Sinopsis:</strong> {{ pelicula.sinopsis }}</p>
+      </div>
+    </div>
+  </div>
+</div>
