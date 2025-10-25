@@ -1,0 +1,6 @@
+{
+  "root": "dist/catalogo-frontend",
+  "routes": {
+    "/**": "index.html"
+  }
+}
