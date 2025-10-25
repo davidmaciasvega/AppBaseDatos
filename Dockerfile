@@ -30,8 +30,8 @@ COPY server.js .
 # Instalar express
 RUN npm install express
 
-# Exponer puerto que usará Render
+# Exponer el puerto que usará Render (usará variable de entorno)
 EXPOSE 10000
 
-# Comando para iniciar el server
+# Comando para iniciar el server usando el puerto de Render
 CMD ["node", "server.js"]
